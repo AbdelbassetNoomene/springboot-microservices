@@ -12,4 +12,6 @@ public interface UserService {
 	public User findUser(int id);
 	
 	public User addUser(User user);
+
+	public User deleteById(int id);
 }
