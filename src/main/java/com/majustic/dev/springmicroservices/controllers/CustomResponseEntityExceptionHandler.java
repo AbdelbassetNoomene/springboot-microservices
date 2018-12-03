@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +43,8 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(
 			MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 		ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), messageSource.getMessage("msg.exception.validation.error", null, 
-				request.getLocale()),
+				/*request.getLocale()),*/
+				LocaleContextHolder.getLocale()),
 				ex.getBindingResult().getAllErrors().toString());
 		return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}
