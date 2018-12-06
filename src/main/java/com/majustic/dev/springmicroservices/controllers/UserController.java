@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.majustic.dev.springmicroservices.exception.UserNotFoundException;
 import com.majustic.dev.springmicroservices.model.User;
 import com.majustic.dev.springmicroservices.service.UserService;
@@ -33,11 +36,16 @@ public class UserController {
 	UserService userService;
 
 	@GetMapping(path = "")
-	public List<User> getListUsers() {
-		return userService.getListUSers();
+	public MappingJacksonValue getListUsers() {
+		List<User> users= userService.getListUSers();
+		SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("name","lastName");
+		SimpleFilterProvider filters = new SimpleFilterProvider().addFilter("User", filter);
+		MappingJacksonValue  mapping = new MappingJacksonValue(users);
+		mapping.setFilters(filters);
+		return mapping;
 	}
 
-	@GetMapping(path = "/{id}")
+	@GetMapping(value = "/{id}")
 	public Resource<User> getUserDetails(@PathVariable int id) {
 		User user =  userService.findUser(id);
 		if(user == null) {

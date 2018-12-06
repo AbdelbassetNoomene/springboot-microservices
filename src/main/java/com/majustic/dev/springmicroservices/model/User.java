@@ -5,16 +5,21 @@ import java.util.Date;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description="All details about the user.")
+//@JsonIgnoreProperties(value= {"birthday"})
+@JsonFilter("User")
 public class User {
 	private int id;
 	
 	@Size(min=2, message="Name should have atleast 2 characters")
 	@ApiModelProperty(notes="Name should have atleast 2 characters")
 	private String name;
+	//@JsonIgnore
 	private String lastName;
 	
 	@Past
